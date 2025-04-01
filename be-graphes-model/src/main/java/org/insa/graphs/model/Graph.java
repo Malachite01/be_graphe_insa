@@ -39,7 +39,7 @@ public final class Graph {
             GraphStatistics graphStatistics) {
         this.mapId = mapId;
         this.mapName = mapName;
-        this.nodes = Collections.unmodifiableList(nodes);
+        this.nodes = Collections.unmodifiableList(nodes);// normal node but but unmodifiable
         this.graphStatistics = graphStatistics;
     }
 
@@ -90,23 +90,24 @@ public final class Graph {
     }
 
     /**
-     * @return Transpose graph of this graph.
+     * @return Transpose graph of this graph. (i.e., reverse the direction of all arcs) i.e transposition of the matrix describing the graph
      */
     public Graph transpose() {
         final ArrayList<Node> trNodes = new ArrayList<>(nodes.size());
-        for (Node node : nodes) {
-            trNodes.add(new Node(node.getId(), node.getPoint()));
+        for (Node node : nodes) { // Create a list of trNodes which is a copy of nodes 
+            trNodes.add(new Node(node.getId(), node.getPoint()));// Node(int id, Point point) with point being the location of the node 
         }
-        for (Node node : nodes) {
-            final Node orig = trNodes.get(node.getId());
-            for (Arc arc : node.getSuccessors()) {
-                if (arc.getRoadInformation().isOneWay()) {
+        for (Node node : nodes) { // Iterate over the nodes of the original graph
+            final Node orig = trNodes.get(node.getId()); // Get the actual node from the transposed graph
+            for (Arc arc : node.getSuccessors()) { // Iterate over the successors of the node
+                if (arc.getRoadInformation().isOneWay()) { // if our arc is one way (i.e., not a two way road) 
                     final Node dest = trNodes.get(arc.getDestination().getId());
+                    // Create a new ArcBackward with the original node as the origin and the destination as the destination
                     dest.addSuccessor(
                             new ArcBackward(new ArcForward(orig, dest, arc.getLength(),
                                     arc.getRoadInformation(), arc.getPoints())));
-                }
-                else if (arc instanceof ArcForward) {
+                } 
+                else if (arc instanceof ArcForward) { // if our arc is not one way 
                     final Node dest = trNodes.get(arc.getDestination().getId());
                     Arc newArc = new ArcForward(orig, dest, arc.getLength(),
                             arc.getRoadInformation(), arc.getPoints());

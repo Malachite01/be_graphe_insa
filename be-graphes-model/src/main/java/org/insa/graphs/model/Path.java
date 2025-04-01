@@ -27,7 +27,7 @@ public class Path {
      *         consecutive nodes in the list are not connected in the graph.
      * @deprecated Need to be implemented.
      */
-    public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)
+    public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)//? algo implentation?
             throws IllegalArgumentException {
         List<Arc> arcs = new ArrayList<Arc>();
         // TODO:
@@ -45,7 +45,7 @@ public class Path {
      *         consecutive nodes in the list are not connected in the graph.
      * @deprecated Need to be implemented.
      */
-    public static Path createShortestPathFromNodes(Graph graph, List<Node> nodes)
+    public static Path createShortestPathFromNodes(Graph graph, List<Node> nodes)//? algo implentation?
             throws IllegalArgumentException {
         List<Arc> arcs = new ArrayList<Arc>();
         // TODO:

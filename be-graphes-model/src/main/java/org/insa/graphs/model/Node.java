@@ -43,8 +43,8 @@ public final class Node {
             origin.addSuccessor(arc);
         }
         else {
-            Arc d2o;
-            if (origin.getId() < destination.getId()) {
+            Arc d2o; // Destination to Origin
+            if (origin.getId() < destination.getId()) { 
                 arc = new ArcForward(origin, destination, length, roadInformation,
                         points);
                 d2o = new ArcBackward(arc);
