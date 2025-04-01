@@ -186,8 +186,21 @@ public class Path {
      * @return true if the path is valid, false otherwise.
      * @deprecated Need to be implemented.
      */
+    //TODO: implement this method
     public boolean isValid() {
-        // TODO:
+        if (this.isEmpty()) {
+            return true;
+        }
+        else if(this.arcs.isEmpty() && this.origin != null) { // A single node without arcs
+            return true;
+
+        }else if (arcs.get(0).getOrigin() == this.getOrigin()){
+            for(int i = 0; i < arcs.size()-1; i++) {
+                if(arcs.get(i).getDestination()==arcs.get(i+1).getOrigin()){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -198,7 +211,6 @@ public class Path {
      * @deprecated Need to be implemented.
      */
     public float getLength() {
-        // TODO:
         return 0;
     }
 
