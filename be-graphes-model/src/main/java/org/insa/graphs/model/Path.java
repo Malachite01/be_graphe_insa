@@ -226,8 +226,8 @@ public class Path {
      *         kilometers-per-hour).
      * @deprecated Need to be implemented.
      */
-    public double getTravelTime(double speed) {
-        // TODO:
+   public double getTravelTime(double speed) {
+        
         return 0;
     }
 

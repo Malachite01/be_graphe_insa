@@ -39,7 +39,7 @@ public abstract class Arc {
      * @return Time (in seconds) required to travel this arc at the given speed (in
      *         kilometers-per-hour).
      */
-    public double getTravelTime(double speed) {
+    public double getTravelTime(double speed) {//gets the travel time for ONE ARC, not the whole path(for the whole path it'll be implemented in Path.)
         return getLength() * 3600.0 / (speed * 1000.0);
     }
 

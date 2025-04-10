@@ -32,4 +32,6 @@ This is an INSA local copy of [Mikael CAPELLE's repository](https://gitea.typena
     git commit -m "My initial commit"
     git push
     ```
+7. A few Precisions: 
+    An arc is composed of two nodes, keeping in mind that the arc class is just an interface, which will be implemented by ArcBackward and ArcForward. Path, on the other side, is composed of a list of arcs.
 
