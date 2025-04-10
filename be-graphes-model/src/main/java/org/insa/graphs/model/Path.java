@@ -2,6 +2,7 @@ package org.insa.graphs.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -52,8 +53,30 @@ public class Path {
      */
     //TODO
     public static Path createShortestPathFromNodes(Graph graph, List<Node> nodes)//? algo implentation?
-            throws IllegalArgumentException {
-        List<Arc> arcs = new ArrayList<Arc>();
+            throws IllegalArgumentException {        
+        List<Arc> arcs = new ArrayList<Arc>(); //ShortestPath between nodes
+        
+        //Iterate through the list of nodes
+        for(int i = 0; i < nodes.size()-1; i++) {
+            Node currentNode = nodes.get(i);
+            Node nextNode = nodes.get(i+1);
+            List<Arc> successorsList = currentNode.getSuccessors();
+            
+            //Exception if two nodes are not connected
+            //if(!currentNode.getSuccessors().contains(nextNode)) throw new IllegalArgumentException("Invalid list of nodes: not all nodes are connected");            
+
+            float currentShortestLength = 1000000000;
+            Arc currentShortestArc = successorsList.get(0); // Default take the first arc
+            // Iterate through the arcs (successors) 
+            for(int j = 0; j < successorsList.size(); j++) { // Same thing as currentNode.getNumberOfSuccessors();
+                if(successorsList.get(j).getLength() < currentShortestLength) {
+                    currentShortestLength = successorsList.get(j).getLength();
+                    currentShortestArc = successorsList.get(j);
+                }
+            }
+            arcs.add(currentShortestArc);
+
+        }
         return new Path(graph, arcs);
     }
 

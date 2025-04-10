@@ -209,7 +209,7 @@ public class PathTest {
         Arc[] expected;
 
         // Simple construction
-        path = Path.createShortestPathFromNodes(graph,
+       path = Path.createShortestPathFromNodes(graph,
                 Arrays.asList(new Node[] { nodes[0], nodes[1], nodes[2] }));
         expected = new Arc[] { a2b, b2c };
         assertEquals(expected.length, path.getArcs().size());
