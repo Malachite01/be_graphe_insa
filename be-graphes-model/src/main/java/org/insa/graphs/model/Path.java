@@ -211,11 +211,15 @@ public class Path {
      * Compute the length of this path (in meters).
      *
      * @return Total length of the path (in meters).
-     * @deprecated Need to be implemented.
      */
-    //TODO
     public float getLength() {
-        return 0;
+        float length = 0;
+        if (!this.isEmpty()) { // if the path is not empty (to avoid null length)
+            for(Arc arc : this.arcs) {
+                length += arc.getLength(); // add the length of each arc to the total length
+            }
+        }
+        return length;
     }
 
     /**
@@ -224,11 +228,15 @@ public class Path {
      * @param speed Speed to compute the travel time.
      * @return Time (in seconds) required to travel this path at the given speed (in
      *         kilometers-per-hour).
-     * @deprecated Need to be implemented.
      */
     public double getTravelTime(double speed) {
-        // TODO:
-        return 0;
+        float time = 0;
+        if (!this.isEmpty()) { // if the path is not empty (to avoid null length)
+            for(Arc arc : this.arcs) {
+                time += arc.getTravelTime(speed); // add the speed of each arc to the total speed
+            }
+        }
+        return time;
     }
 
     /**
@@ -236,11 +244,14 @@ public class Path {
      * every arc.
      *
      * @return Minimum travel time to travel this path (in seconds).
-     * @deprecated Need to be implemented.
      */
     public double getMinimumTravelTime() {
-        // TODO:
-        return 0;
+        float time = 0;
+        if (!this.isEmpty()) { // if the path is not empty (to avoid null length)
+            for(Arc arc : this.arcs) {
+                time += arc.getMinimumTravelTime(); // add the maximum speed of each arc to the total speed
+            }
+        }
+        return time;
     }
-
 }
