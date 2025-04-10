@@ -27,10 +27,15 @@ public class Path {
      *         consecutive nodes in the list are not connected in the graph.
      * @deprecated Need to be implemented.
      */
+    //TODO
     public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)//? algo implentation?
             throws IllegalArgumentException {
+        //gestion des exceptions
+
+
         List<Arc> arcs = new ArrayList<Arc>();
-        // TODO:
+        
+        
         return new Path(graph, arcs);
     }
 
@@ -45,10 +50,10 @@ public class Path {
      *         consecutive nodes in the list are not connected in the graph.
      * @deprecated Need to be implemented.
      */
+    //TODO
     public static Path createShortestPathFromNodes(Graph graph, List<Node> nodes)//? algo implentation?
             throws IllegalArgumentException {
         List<Arc> arcs = new ArrayList<Arc>();
-        // TODO:
         return new Path(graph, arcs);
     }
 
@@ -184,22 +189,20 @@ public class Path {
      * </ul>
      *
      * @return true if the path is valid, false otherwise.
-     * @deprecated Need to be implemented.
      */
-    //TODO: implement this method
     public boolean isValid() {
-        if (this.isEmpty()) {
+        if (this.isEmpty()) { // if the path is empty
             return true;
-        }
-        else if(this.arcs.isEmpty() && this.origin != null) { // A single node without arcs
+        } else if(this.arcs.isEmpty() && this.origin != null) { // A single node without arcs
             return true;
-
-        }else if (arcs.get(0).getOrigin() == this.getOrigin()){
+        } else if (arcs.get(0).getOrigin() == this.getOrigin()){ // if the first arc has for origin the origin of the path
             for(int i = 0; i < arcs.size()-1; i++) {
-                if(arcs.get(i).getDestination()==arcs.get(i+1).getOrigin()){
-                    return true;
+                // if the destination of the first one is not the origin of the second one, path is not valid
+                if(arcs.get(i).getDestination() != arcs.get(i+1).getOrigin()){ 
+                    return false;
                 }
             }
+            return true;
         }
         return false;
     }
@@ -210,6 +213,7 @@ public class Path {
      * @return Total length of the path (in meters).
      * @deprecated Need to be implemented.
      */
+    //TODO
     public float getLength() {
         return 0;
     }
