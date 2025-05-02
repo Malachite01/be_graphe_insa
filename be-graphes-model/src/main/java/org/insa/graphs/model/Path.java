@@ -31,12 +31,37 @@ public class Path {
     //TODO
     public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)//? algo implentation?
             throws IllegalArgumentException {
-        //gestion des exceptions
+        List<Arc> arcs = new ArrayList<Arc>(); //ShortestPath between nodes
 
+        // Avoids trap construction
+        if (nodes.size() == 1){
+            return new Path(graph, nodes.get(0));
+        }
 
-        List<Arc> arcs = new ArrayList<Arc>();
-        
-        
+        //Iterate through the list of nodes
+        for(int i = 0; i < nodes.size()-1; i++) {
+            Node currentNode = nodes.get(i);
+            Node nextNode = nodes.get(i+1);
+            List<Arc> successorsList = currentNode.getSuccessors();       
+
+            double currentFastestLength = (float)Double.POSITIVE_INFINITY;
+            Arc currentFastestArc = null; //we know nothing about the arcs yet
+
+            // Iterate through the arcs (successors) 
+            for(int j = 0; j < successorsList.size(); j++) { // Same thing as currentNode.getNumberOfSuccessors();
+                if(successorsList.get(j).getDestination() == nodes.get(i+1) && successorsList.get(j).getMinimumTravelTime() < currentFastestLength) {
+                    currentFastestLength = successorsList.get(j).getMinimumTravelTime();
+                    currentFastestArc = successorsList.get(j);
+                }
+            }
+            
+            // Exception if two nodes aren't connected
+            if(currentFastestLength == (float)Double.POSITIVE_INFINITY){
+                throw new IllegalArgumentException("Invalid list of nodes: not all nodes are connected");
+            }
+
+            arcs.add(currentFastestArc);
+        }
         return new Path(graph, arcs);
     }
 
@@ -49,33 +74,39 @@ public class Path {
      * @return A path that goes through the given list of nodes.
      * @throws IllegalArgumentException If the list of nodes is not valid, i.e. two
      *         consecutive nodes in the list are not connected in the graph.
-     * @deprecated Need to be implemented.
      */
-    //TODO
     public static Path createShortestPathFromNodes(Graph graph, List<Node> nodes)//? algo implentation?
             throws IllegalArgumentException {        
         List<Arc> arcs = new ArrayList<Arc>(); //ShortestPath between nodes
         
+        // Avoids trap construction
+        if (nodes.size() == 1){
+            return new Path(graph, nodes.get(0));
+        }
+
         //Iterate through the list of nodes
         for(int i = 0; i < nodes.size()-1; i++) {
             Node currentNode = nodes.get(i);
             Node nextNode = nodes.get(i+1);
-            List<Arc> successorsList = currentNode.getSuccessors();
-            
-            //Exception if two nodes are not connected
-            //if(!currentNode.getSuccessors().contains(nextNode)) throw new IllegalArgumentException("Invalid list of nodes: not all nodes are connected");            
+            List<Arc> successorsList = currentNode.getSuccessors();       
 
-            float currentShortestLength = 1000000000;
-            Arc currentShortestArc = successorsList.get(0); // Default take the first arc
+            float currentShortestLength = (float)Double.POSITIVE_INFINITY;
+            Arc currentShortestArc = null; //we know nothing about the arcs yet
+
             // Iterate through the arcs (successors) 
             for(int j = 0; j < successorsList.size(); j++) { // Same thing as currentNode.getNumberOfSuccessors();
-                if(successorsList.get(j).getLength() < currentShortestLength) {
+                if(successorsList.get(j).getDestination() == nodes.get(i+1) && successorsList.get(j).getLength() < currentShortestLength) {
                     currentShortestLength = successorsList.get(j).getLength();
                     currentShortestArc = successorsList.get(j);
                 }
             }
-            arcs.add(currentShortestArc);
+            
+            // Exception if two nodes aren't connected
+            if(currentShortestLength == (float)Double.POSITIVE_INFINITY){
+                throw new IllegalArgumentException("Invalid list of nodes: not all nodes are connected");
+            }
 
+            arcs.add(currentShortestArc);
         }
         return new Path(graph, arcs);
     }

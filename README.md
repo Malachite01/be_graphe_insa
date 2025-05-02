@@ -37,6 +37,6 @@ This is an INSA local copy of [Mikael CAPELLE's repository](https://gitea.typena
     An arc is composed of two nodes, keeping in mind that the arc class is just an interface, which will be implemented by ArcBackward and ArcForward. Path, on the other side, is composed of a list of arcs.
     PRECISION2 
     normally as we saw during the TDs there are no difference between a list of paths and a list of nodes. 
-    However here, there is a difference between a list of paths and a liste of nodes, because there can be multiple path to between two nodes
+    However here, there is a difference between a list of paths and a liste of nodes, because there can be multiple paths to between two nodes
     this isnt a "graphe simple" like we saw in the TDs. We are going to use this difference in getfastest and getshortestpath.
 
