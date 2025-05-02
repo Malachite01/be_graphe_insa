@@ -18,7 +18,7 @@ public interface GraphReader extends Closeable {
     public void addObserver(GraphReaderObserver observer);
 
     /**
-     * Read a graph an returns it.
+     * Read a graph and returns it.
      *
      * @return The graph read.
      * @throws IOException if an exception occurs while reading the graph.
