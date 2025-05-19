@@ -1,18 +1,19 @@
 package org.insa.graphs.algorithm.shortestpath;
 
 import org.insa.graphs.model.Node;
+import org.insa.graphs.model.Arc;
 
 public class Label implements Comparable<Label> {
     private Node currentNode;
     private float currentCost;
-    private Node fatherNode;
+    private Arc father;
     private boolean marked;
 
-    public Label(Node current, boolean marked, float currentCost, Node fatherNode) {
+    public Label(Node current, boolean marked, float currentCost) {
         this.currentNode = current;
         this.currentCost = currentCost;
-        this.fatherNode = fatherNode;
         this.marked = marked;
+        this.father = null;
     }
 
     // label
@@ -20,23 +21,31 @@ public class Label implements Comparable<Label> {
     // Father le der sommet d'ou on vient
     // Mark pr savoir si on a traité
     public Node getCurrentNode() {
-        return currentNode;
+        return this.currentNode;
     }
 
-    public Node getFatherNode() {
-        return fatherNode;
+    public Arc getFather() {
+        return this.father;
+    }
+
+    public void setFather(Arc father) {
+        this.father = father;
     }
 
     public boolean isMarked() {
-        return marked;
+        return this.marked;
     }
 
     public void setMarked(boolean marked){
-        this.marked=marked;
+        this.marked = marked;
     }
 
     public float getCost() {
-        return currentCost;
+        return this.currentCost;
+    }
+
+    public void setCost(float cost) {
+        this.currentCost = cost;
     }
 
     @Override
