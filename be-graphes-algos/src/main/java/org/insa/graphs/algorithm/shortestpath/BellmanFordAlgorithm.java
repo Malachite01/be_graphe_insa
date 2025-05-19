@@ -84,17 +84,18 @@ public class BellmanFordAlgorithm extends ShortestPathAlgorithm {
             // Create the path from the array of predecessors...
             ArrayList<Arc> arcs = new ArrayList<>();
             Arc arc = predecessorArcs[data.getDestination().getId()];
+            double totalCost = 0;
             while (arc != null) {
                 arcs.add(arc);
                 arc = predecessorArcs[arc.getOrigin().getId()];
+                totalCost += arc.getLength();
             }
 
             // Reverse the path...
             Collections.reverse(arcs);
 
             // Create the final solution.
-            solution = new ShortestPathSolution(data, Status.OPTIMAL,
-                    new Path(graph, arcs));
+            solution = new ShortestPathSolution(data, Status.OPTIMAL, new Path(graph, arcs), totalCost);
         }
 
         return solution;

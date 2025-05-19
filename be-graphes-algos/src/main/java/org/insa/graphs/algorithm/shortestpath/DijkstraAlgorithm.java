@@ -32,6 +32,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         // Set the cost to infinity, fathers to null, and marked to false the label of the origin node is set to 0
         for (int i = 0; i < nbNodes; i++) {
             labels[i] = new Label(graph.get(i), false, Float.POSITIVE_INFINITY);
+        
         }
         // set the cost of the node at the origin, to 0
         labels[data.getOrigin().getId()] = new Label(data.getOrigin(), false, 0);
@@ -76,14 +77,19 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
                 // Reconstruct the path from the destination to the origin
                 List<Arc> arcs = new ArrayList<>();
                 Label label = labels[destination.getId()];
+                double totalCost = 0; // Calculate the total cost of the path
+
                 while (label.getFather() != null) {
                     arcs.add(label.getFather());
+                    totalCost += label.getCost();
                     label = labels[label.getFather().getOrigin().getId()];
                 }
-                Collections.reverse(arcs);
+                Collections.reverse(arcs); // Reverse the list to get the path from origin to destination
 
+                // Create the shortest path from the list of arcs
                 Path path = new Path(graph, arcs);
-                return new ShortestPathSolution(data, Status.OPTIMAL, path);
+
+                return new ShortestPathSolution(data, Status.OPTIMAL, path, totalCost);
             }
 
             // Explore the outgoing arcs of the current node
@@ -112,6 +118,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
                         heap.remove(successorLabel);
                     } catch (ElementNotFoundException e) {} // successorLabel not in heap
 
+                    // Update by removing the old label and inserting the new one
                     successorLabel.setCost(newCost);
                     successorLabel.setFather(arc);
                     heap.insert(successorLabel);
@@ -123,6 +130,6 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         }
 
         // Aucun chemin trouvé
-        return new ShortestPathSolution(data, Status.INFEASIBLE, null);
+        return new ShortestPathSolution(data, Status.INFEASIBLE);
     }
 }

@@ -9,6 +9,7 @@ public class ShortestPathSolution extends AbstractSolution {
 
     // Optimal solution.
     private final Path path;
+    private double cost;
 
     /**
      * Create a new infeasible shortest-path solution for the given input and status.
@@ -28,9 +29,10 @@ public class ShortestPathSolution extends AbstractSolution {
      * @param status Status of the solution (FEASIBLE / OPTIMAL).
      * @param path Path corresponding to the solution.
      */
-    public ShortestPathSolution(ShortestPathData data, Status status, Path path) {
+    public ShortestPathSolution(ShortestPathData data, Status status, Path path, double cost) {
         super(data, status);
         this.path = path;
+        this.cost = cost;
     }
 
     @Override
@@ -43,6 +45,13 @@ public class ShortestPathSolution extends AbstractSolution {
      */
     public Path getPath() {
         return path;
+    }
+
+    /**
+     * @return The cost of the path.
+     */
+    public double getCost() {
+        return this.cost;
     }
 
     @Override

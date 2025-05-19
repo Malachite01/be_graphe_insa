@@ -43,6 +43,9 @@ public class Label implements Comparable<Label> {
     public float getCost() {
         return this.currentCost;
     }
+     public float getTotalCost() {
+        return this.currentCost;
+    }
 
     public void setCost(float cost) {
         this.currentCost = cost;
