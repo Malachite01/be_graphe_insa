@@ -31,13 +31,15 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
         final int nbNodes = graph.size();
         LabelStar[] labels = new LabelStar[nbNodes];
         Mode mode= data.getMode();
+        int maxSpeed = graph.getGraphInformation().getMaximumSpeed(); // Retrieve maximum speed from graph information
+
         // Initialize labels for each node in the graph
         // Set the cost to infinity, fathers to null, and marked to false the label of the origin node is set to 0
         for (int i = 0; i < nbNodes; i++) {
             if(mode==Mode.LENGTH){
             labels[i] = new LabelStar(graph.get(i), false, Float.POSITIVE_INFINITY,(float) Point.distance(graph.get(i).getPoint(), destinationNode.getPoint()));
             }else if (mode==Mode.TIME){
-                labels[i] = new LabelStar(graph.get(i), false, Float.POSITIVE_INFINITY,(float) Point.distance(graph.get(i).getPoint(), destinationNode.getPoint()));
+                labels[i] = new LabelStar(graph.get(i), false, Float.POSITIVE_INFINITY, (float)(Point.distance(graph.get(i).getPoint(), destinationNode.getPoint()) / maxSpeed));
 
             }
         }
@@ -45,7 +47,7 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
         if(mode==Mode.LENGTH){
         labels[data.getOrigin().getId()] = new LabelStar(data.getOrigin(), false, (float)0,(float) Point.distance(originNode.getPoint(), destinationNode.getPoint()));
             }else if (mode==Mode.TIME){
-        labels[data.getOrigin().getId()] = new LabelStar(data.getOrigin(), false, (float)0,(float) Point.distance(originNode.getPoint(), destinationNode.getPoint()));
+        labels[data.getOrigin().getId()] = new LabelStar(data.getOrigin(), false, (float)0,(float) (Point.distance(originNode.getPoint(), destinationNode.getPoint()))/maxSpeed);
 
             }
         return labels;

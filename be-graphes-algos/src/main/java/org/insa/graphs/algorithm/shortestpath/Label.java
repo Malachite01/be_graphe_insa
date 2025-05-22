@@ -43,6 +43,7 @@ public class Label implements Comparable<Label> {
     public float getCost() {
         return this.currentCost;
     }
+
      public float getTotalCost() {
         return this.currentCost;
     }
@@ -52,9 +53,10 @@ public class Label implements Comparable<Label> {
     }
 
     @Override
+    //returns the sign of d1-d2 here d1=this.getCost(), 0 if equal
     public int compareTo(Label other) {
-        // Compare based on the cost (or any other criteria)
-        return Double.compare(this.getCost(), other.getCost());
+        // Compare based on the cost (or any other criteria
+        return Double.compare(this.getTotalCost(), other.getTotalCost());
     }
 
 }

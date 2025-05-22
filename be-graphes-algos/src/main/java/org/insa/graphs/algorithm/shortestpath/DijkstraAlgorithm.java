@@ -36,7 +36,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         }
         // set the cost of the node at the origin, to 0
         labels[data.getOrigin().getId()] = new Label(data.getOrigin(), false, 0);
-        return labels;
+        return labels; 
     }
 
     @Override
@@ -92,7 +92,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
                 return new ShortestPathSolution(data, Status.OPTIMAL, path, totalCost);
             }
 
-            // Explore the outgoing arcs of the current node
+            // if not destination and not marked, explore the outgoing arcs of the current node
             // For each successor of the current node
             for (Arc arc : currentNode.getSuccessors()) {
                 // Check if the arc is allowed
@@ -106,13 +106,14 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
                 // If the successor label is already marked, skip to the next arc
                 if (successorLabel.isMarked()) continue;
 
-                // Calculate the new cost
+                // Calculate the new cost,//?data is our current path of course
                 float newCost = current.getCost() + (float) data.getCost(arc);
 
 
                 // If the new cost is less than the current cost of the successor label
                 // Update the cost and the father of the successor label
                 // and insert the successor label into the heap
+                //successorLabel.getCOst= current know shortest cost to destinatino node of our arc
                 if (newCost < successorLabel.getCost()) {
                     try {
                         heap.remove(successorLabel);

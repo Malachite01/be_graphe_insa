@@ -28,5 +28,6 @@ public class LabelStar extends Label implements Comparable<Label>{
     */
     public float getTotalCost(){
         return this.getCost() + this.destinationCost; // Pass appropriate ArcInspector if needed
+                                //destinationCost = heuristic
     }
 }
