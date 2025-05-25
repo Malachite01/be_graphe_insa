@@ -1,10 +1,6 @@
 package org.insa.graphs.algorithm.shortestpath;
 
 import org.insa.graphs.model.Node;
-import org.insa.graphs.algorithm.ArcInspector;
-import org.insa.graphs.model.Arc;
-import org.insa.graphs.model.Point;
-import org.insa.graphs.algorithm.AbstractInputData.Mode;
 
 
 public class LabelStar extends Label implements Comparable<Label>{
