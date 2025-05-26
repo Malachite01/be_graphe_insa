@@ -14,6 +14,8 @@ import org.insa.graphs.model.Path;
 
 public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
+    private int nodeVisited = 0; // Counter for the number of nodes visited
+
     public DijkstraAlgorithm(ShortestPathData data) {
         super(data);    
     }
@@ -67,6 +69,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
             // Mark the current node
             current.setMarked(true);
+            nodeVisited++; // Increment the counter for visited nodes
             notifyNodeMarked(currentNode);
 
 
@@ -132,5 +135,9 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
         // Aucun chemin trouvé
         return new ShortestPathSolution(data, Status.INFEASIBLE);
+    }
+
+    public int getNodeVisited() {
+        return this.nodeVisited;
     }
 }

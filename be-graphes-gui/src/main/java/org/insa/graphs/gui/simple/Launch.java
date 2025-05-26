@@ -25,7 +25,61 @@ import org.insa.graphs.model.io.BinaryGraphReader;
 import org.insa.graphs.model.io.GraphReader;
 import java.awt.Color;
 
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import javax.swing.JPanel;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
+
 public class Launch {
+    public static void showCombinedCharts(DefaultCategoryDataset lineDataset, double avgDijkstra, double avgAStar) {
+        SwingUtilities.invokeLater(() -> {
+            // Graphique en ligne (évolution des temps)
+            JFreeChart lineChart = ChartFactory.createLineChart(
+                    "Comparaison des temps de résolution",
+                    "Tests",
+                    "Temps (ms)",
+                    lineDataset,
+                    PlotOrientation.VERTICAL,
+                    true,
+                    true,
+                    false);
+
+            ChartPanel lineChartPanel = new ChartPanel(lineChart);
+
+            // Graphique en barres (temps moyens)
+            DefaultCategoryDataset barDataset = new DefaultCategoryDataset();
+            barDataset.setValue(avgDijkstra, "Algorithme", "Dijkstra");
+            barDataset.setValue(avgAStar, "Algorithme", "A*");
+
+            JFreeChart barChart = ChartFactory.createBarChart(
+                    "Temps moyen d'exécution",
+                    "Algorithme",
+                    "Temps (ms)",
+                    barDataset,
+                    PlotOrientation.VERTICAL,
+                    false, true, false);
+
+            ChartPanel barChartPanel = new ChartPanel(barChart);
+
+            // Créer le panel principal avec les deux graphiques
+            JPanel combinedPanel = new JPanel();
+            combinedPanel.setLayout(new java.awt.GridLayout(1, 2));
+            combinedPanel.add(lineChartPanel);
+            combinedPanel.add(barChartPanel);
+
+            // Fenêtre contenant les deux graphiques
+            JFrame frame = new JFrame("Analyse des performances");
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setSize(1000, 600);
+            frame.setContentPane(combinedPanel);
+            frame.setVisible(true);
+        });
+    }
+
+
     /**
      * Create a new Drawing inside a JFrame an return it.
      *
@@ -70,6 +124,8 @@ public class Launch {
 
         int successfulTests = 0;
         int failedTests = 0;
+        int invalidPathDijkstra = 0;
+        int invalidPathAStar = 0;
 
         System.out.println("---SCENARIOS ALEATOIRES---\n");
         System.out.println("Carte utilisée : " + mapToTest +"\n");
@@ -86,6 +142,11 @@ public class Launch {
         final Drawing drawing = createDrawing();
         drawing.drawGraph(graph);
 
+        // Statistics variable
+        DefaultCategoryDataset objDatasetSolvingTime = new DefaultCategoryDataset();
+        long totalTimeDijkstra = 0;
+        long totalTimeAStar = 0;
+
         for (int i = 0; i < nbTests; i++) {   
             // Pick a random origin and destination node each time
             int randomOrigin = RandomGenerator.getDefault().nextInt(1, graph.size());
@@ -98,16 +159,27 @@ public class Launch {
             ShortestPathAlgorithm dijkstra = new DijkstraAlgorithm(data);
             solutionDijkstra = dijkstra.run();
             pathDijkstra = solutionDijkstra.getPath();
+            //TODO Nb path not valid dijkstra et A*
+            // Statistics solving time for Dijkstra algorithm
+            long solvingTimeDijkstraMillis = solutionDijkstra.getSolvingTime().toMillis(); // convert Duration to milliseconds
+            totalTimeDijkstra += solvingTimeDijkstraMillis;
+            objDatasetSolvingTime.setValue(solvingTimeDijkstraMillis, "Dijkstra", "Test " + (i + 1));
 
             // A*
             ShortestPathAlgorithm astar = new AStarAlgorithm(data);
             solutionAStar = astar.run();
             pathAStar = solutionAStar.getPath();
+            // Statistics solving time for A* algorithm
+            long solvingTimeAStarMillis = solutionAStar.getSolvingTime().toMillis(); // convert Duration to milliseconds
+            totalTimeAStar += solvingTimeAStarMillis;
+            objDatasetSolvingTime.setValue(solvingTimeAStarMillis, "A*", "Test " + (i + 1));
             
             // Test if the path is valid
             if (!testPathValid(pathDijkstra) || !testPathValid(pathAStar)) {
                 System.out.println("Test échoué : Chemin invalide (impossible de dessiner)\n");
                 failedTests++;
+                invalidPathAStar += !testPathValid(pathAStar) ? 1 : 0;
+                invalidPathDijkstra += !testPathValid(pathDijkstra) ? 1 : 0;
                 continue; // Skip to the next iteration if the path is invalid
             }
 
@@ -135,11 +207,17 @@ public class Launch {
             }
 
         }
+        
+        // Show the solving time chart
+        showCombinedCharts(objDatasetSolvingTime, totalTimeDijkstra/(double)nbTests, totalTimeAStar/(double)nbTests);
+
         System.out.println("---FIN DES SCENARIOS ALEATOIRES---\n");
         System.out.println("Test réussi = les couts et arcs des chemins Dijkstra et A* sont égaux (l'heuristique de A* est vérifiée). \n");
         System.out.println("REUSSIS : " + successfulTests + "/" + nbTests + "\n");
         System.out.println("Test échoué = les couts et/ou arcs des chemins Dijkstra et A* sont différents ou chemin invalide. \n");
         System.out.println("ECHOUES : " + failedTests + "/" + nbTests + "\n");
+        System.out.println("Chemins invalides Dijkstra : " + invalidPathDijkstra + "\n");
+        System.out.println("Chemins invalides A* : " + invalidPathAStar + "\n");
         if (failedTests+ successfulTests != nbTests) System.out.println("Oupsi, le nombre de tests réussis et échoués ne correspond pas au nombre de tests effectués...\n");
     }
 
