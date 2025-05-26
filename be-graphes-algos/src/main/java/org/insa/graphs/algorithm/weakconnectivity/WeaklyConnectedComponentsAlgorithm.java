@@ -155,4 +155,10 @@ public class WeaklyConnectedComponentsAlgorithm
                 components);
     }
 
+    @Override
+    protected int getNodeVisited() {
+        // This algorithm does not count the number of visited nodes.
+        return 0;
+    }
+
 }

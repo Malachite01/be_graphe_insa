@@ -12,6 +12,8 @@ import org.insa.graphs.model.Path;
 
 public class BellmanFordAlgorithm extends ShortestPathAlgorithm {
 
+    private int nodeVisited = 0; // Counter for the number of nodes visited
+
     public BellmanFordAlgorithm(ShortestPathData data) {
         super(data);
     }
@@ -42,6 +44,7 @@ public class BellmanFordAlgorithm extends ShortestPathAlgorithm {
         for (int i = 0; !found && i < nbNodes; ++i) {
             found = true;
             for (Node node : graph.getNodes()) {
+                nodeVisited++;
                 for (Arc arc : node.getSuccessors()) {
 
                     // Small test to check allowed roads...
@@ -101,4 +104,8 @@ public class BellmanFordAlgorithm extends ShortestPathAlgorithm {
         return solution;
     }
 
+
+    public int getNodeVisited() {
+        return nodeVisited;
+    }
 }

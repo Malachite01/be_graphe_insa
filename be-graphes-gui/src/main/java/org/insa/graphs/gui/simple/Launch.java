@@ -164,7 +164,7 @@ public class Launch {
             long solvingTimeDijkstraMillis = solutionDijkstra.getSolvingTime().toMillis(); // convert Duration to milliseconds
             totalTimeDijkstra += solvingTimeDijkstraMillis;
             objDatasetSolvingTime.setValue(solvingTimeDijkstraMillis, "Dijkstra", "Test " + (i + 1));
-
+            System.out.println("Dijkstra" + solutionDijkstra.getNodeVisited());
             // A*
             ShortestPathAlgorithm astar = new AStarAlgorithm(data);
             solutionAStar = astar.run();
@@ -173,7 +173,7 @@ public class Launch {
             long solvingTimeAStarMillis = solutionAStar.getSolvingTime().toMillis(); // convert Duration to milliseconds
             totalTimeAStar += solvingTimeAStarMillis;
             objDatasetSolvingTime.setValue(solvingTimeAStarMillis, "A*", "Test " + (i + 1));
-            
+            System.out.println("A*" + solutionAStar.getNodeVisited());
             // Test if the path is valid
             if (!testPathValid(pathDijkstra) || !testPathValid(pathAStar)) {
                 System.out.println("Test échoué : Chemin invalide (impossible de dessiner)\n");

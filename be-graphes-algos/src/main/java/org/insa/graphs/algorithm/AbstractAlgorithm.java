@@ -71,6 +71,7 @@ public abstract class AbstractAlgorithm<Observer> {
         Instant start = Instant.now();
         AbstractSolution solution = this.doRun();
         solution.setSolvingTime(Duration.between(start, Instant.now()));
+        solution.setNodeVisited(this.getNodeVisited());
         return solution;
     }
 
@@ -82,4 +83,5 @@ public abstract class AbstractAlgorithm<Observer> {
      */
     protected abstract AbstractSolution doRun();
 
+    protected abstract int getNodeVisited();
 }

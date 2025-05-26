@@ -22,6 +22,9 @@ public abstract class AbstractSolution {
     // Solving time for the solution.
     private Duration solvingTime;
 
+    // Counter for the number of nodes visited
+    private int nodeVisited = 0;
+
     // Original input of the solution.
     private final AbstractInputData data;
 
@@ -34,6 +37,7 @@ public abstract class AbstractSolution {
         this.data = data;
         this.solvingTime = Duration.ZERO;
         this.status = Status.UNKNOWN;
+        this.nodeVisited = 0;
     }
 
     /**
@@ -73,6 +77,21 @@ public abstract class AbstractSolution {
      */
     protected void setSolvingTime(Duration solvingTime) {
         this.solvingTime = solvingTime;
+    }
+
+    /**
+     * @return Number of nodes visited during the algorithm execution.
+     */
+    public int getNodeVisited() {
+        return nodeVisited;
+    }
+
+    /**
+     * Set the number of nodes visited during the algorithm execution.
+     * @param nodeVisited Number of nodes visited.
+     * */
+    protected void setNodeVisited(int nodeVisited) {
+        this.nodeVisited = nodeVisited;
     }
 
     /**
