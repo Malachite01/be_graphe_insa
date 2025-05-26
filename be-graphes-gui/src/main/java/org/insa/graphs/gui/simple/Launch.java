@@ -144,7 +144,7 @@ public class Launch {
      * @param nbTests The number of tests to perform.
      */
     // BellmanFord a toujours raison, Dijkstra est plus rapide que BellmanFord, A* est plus rapide que Dijkstra 
-    public static void testRandomScenarios(int filterMode, int nbTests, String mapToTest) throws Exception {
+    public static void testRandomScenarios(int filterMode, int nbTests, String mapToTest, boolean showStats) throws Exception {
         if(filterMode < 0 || filterMode > 3) throw new IllegalArgumentException("Invalid filter mode. Must be between 0 and 3.");;
         final Graph graph;
 
@@ -193,10 +193,10 @@ public class Launch {
             pathDijkstra = solutionDijkstra.getPath();
             // Statistics solving time for Dijkstra algorithm
             long solvingTimeDijkstraMillis = solutionDijkstra.getSolvingTime().toMillis(); // convert Duration to milliseconds
-            totalTimeDijkstra += solvingTimeDijkstraMillis;
-            objDatasetSolvingTime.setValue(solvingTimeDijkstraMillis, "Dijkstra", "Test " + (i + 1));
-            objDatasetNodesMarked.setValue(solutionDijkstra.getNodeVisited(), "Dijkstra", "Test " + (i + 1));
-            totalDijkstraNodesMarked += solutionDijkstra.getNodeVisited();
+            totalTimeDijkstra += solvingTimeDijkstraMillis; //? time
+            objDatasetSolvingTime.setValue(solvingTimeDijkstraMillis, "Dijkstra", ""+(i + 1));
+            totalDijkstraNodesMarked += solutionDijkstra.getNodeVisited(); //? nodes
+            objDatasetNodesMarked.setValue(solutionDijkstra.getNodeVisited(), "Dijkstra", ""+(i + 1));
 
             //? A*
             ShortestPathAlgorithm astar = new AStarAlgorithm(data);
@@ -204,10 +204,10 @@ public class Launch {
             pathAStar = solutionAStar.getPath();
             // Statistics solving time for A* algorithm
             long solvingTimeAStarMillis = solutionAStar.getSolvingTime().toMillis(); // convert Duration to milliseconds
-            totalTimeAStar += solvingTimeAStarMillis;
-            objDatasetSolvingTime.setValue(solvingTimeAStarMillis, "A*", "Test " + (i + 1));
-            objDatasetNodesMarked.setValue(solutionAStar.getNodeVisited(), "A*", "Test " + (i + 1));
-            totalAStarNodesMarked += solutionAStar.getNodeVisited();
+            totalTimeAStar += solvingTimeAStarMillis; //? time
+            objDatasetSolvingTime.setValue(solvingTimeAStarMillis, "A*", ""+(i + 1));
+            totalAStarNodesMarked += solutionAStar.getNodeVisited(); //? nodes
+            objDatasetNodesMarked.setValue(solutionAStar.getNodeVisited(), "A*", ""+(i + 1));
 
             //? Test if the path is valid
             if (!testPathValid(pathDijkstra) || !testPathValid(pathAStar)) {
@@ -242,15 +242,17 @@ public class Launch {
         }
         
         //? Show the charts with the statistics collected
-        showAllCharts(
-            objDatasetSolvingTime, 
-            totalTimeDijkstra / (double)successfulTests, 
-            totalTimeAStar / (double)successfulTests,
-            objDatasetNodesMarked,
-            totalDijkstraNodesMarked / (double)successfulTests,
-            totalAStarNodesMarked / (double)successfulTests,
-            filter.toString()
-        );
+        if (showStats) {
+            showAllCharts(
+                objDatasetSolvingTime, 
+                totalTimeDijkstra / (double)successfulTests, 
+                totalTimeAStar / (double)successfulTests,
+                objDatasetNodesMarked,
+                totalDijkstraNodesMarked / (double)successfulTests,
+                totalAStarNodesMarked / (double)successfulTests,
+                filter.toString()
+            );
+        }
 
         //? Summary of the tests
         System.out.println("---FIN DES SCENARIOS ALEATOIRES---\n");
@@ -300,9 +302,9 @@ public class Launch {
         final String mapToTest = "C:\\Users\\mathi\\OneDrive\\Cours\\INSA\\S6\\I3MIIL11 - Graphes\\be-graphes\\be-graphes-maps\\haute-garonne.mapgr";
         // faire plusieurs tests de chemins aléatoires en fonction du mode choisi (0: NOFILTER_LENGTH, 1: CARS_LENGTH, 2: CARS_TIME, 3: PEDESTRIAN_TIME)
         // Cars length
-        testRandomScenarios(1, 50, mapToTest);
+        testRandomScenarios(1, 50, mapToTest, true);
         // Cars time
-        testRandomScenarios(2, 50, mapToTest);
+        testRandomScenarios(2, 50, mapToTest, true);
 
         testManualScenarios();
     }

@@ -19,5 +19,5 @@ doc
 *.mapgr
 *.path
 *.tgz
-!demo_benin.mapgr
-!demo_benin_map.mapfg
+!demo_haute_garonne.mapgr
+!demo_haute_garonne.mapfg
