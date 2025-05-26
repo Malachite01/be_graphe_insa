@@ -117,12 +117,12 @@ public class Launch {
      * @return The created drawing.
      * @throws Exception if something wrong happens when creating the graph.
      */
-    public static Drawing createDrawing() throws Exception {
+    public static Drawing createDrawing(String mode) throws Exception {
         BasicDrawing basicDrawing = new BasicDrawing();
         SwingUtilities.invokeAndWait(new Runnable() {
             @Override
             public void run() {
-                JFrame frame = new JFrame("BE Graphes - Launch");
+                JFrame frame = new JFrame("BE Graphes - Launch : " + mode);
                 frame.setLayout(new BorderLayout());
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setVisible(true);
@@ -168,7 +168,7 @@ public class Launch {
             graph = reader.read();
         }
         // create the drawing
-        final Drawing drawing = createDrawing();
+        final Drawing drawing = createDrawing(filter.toString());
         drawing.drawGraph(graph);
 
         // Statistics variable
