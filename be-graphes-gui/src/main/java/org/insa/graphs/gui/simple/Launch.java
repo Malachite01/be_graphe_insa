@@ -34,47 +34,77 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 public class Launch {
-    public static void showCombinedCharts(DefaultCategoryDataset lineDataset, double avgDijkstra, double avgAStar) {
+    /**
+     * Show all charts together in a JFrame.
+     * @param solvingTimeDataset Dataset for the solving time line chart.
+     * @param avgDijkstraTime Average solving time for Dijkstra algorithm.
+     * @param avgAStarTime Average solving time for A* algorithm.
+     * @param nodesDataset Dataset for the nodes visited line chart.
+     * @param avgDijkstraNodes Average number of nodes visited for Dijkstra algorithm.
+     * @param avgAStarNodes Average number of nodes visited for A* algorithm.
+     */
+    public static void showAllChartsTogether(DefaultCategoryDataset solvingTimeDataset, double avgDijkstraTime, double avgAStarTime, 
+    DefaultCategoryDataset nodesDataset, double avgDijkstraNodes, double avgAStarNodes) {
         SwingUtilities.invokeLater(() -> {
-            // Graphique en ligne (évolution des temps)
-            JFreeChart lineChart = ChartFactory.createLineChart(
+            //? Line Chart - Solving Time
+            JFreeChart timeLineChart = ChartFactory.createLineChart(
                     "Comparaison des temps de résolution",
-                    "Tests",
+                    "Test",
                     "Temps (ms)",
-                    lineDataset,
+                    solvingTimeDataset,
                     PlotOrientation.VERTICAL,
-                    true,
-                    true,
-                    false);
+                    true, true, false
+            );
 
-            ChartPanel lineChartPanel = new ChartPanel(lineChart);
+            //? Bar Chart - Average Time
+            DefaultCategoryDataset avgTimeDataset = new DefaultCategoryDataset();
+            avgTimeDataset.setValue(avgDijkstraTime, "Algorithme", "Dijkstra");
+            avgTimeDataset.setValue(avgAStarTime, "Algorithme", "A*");
 
-            // Graphique en barres (temps moyens)
-            DefaultCategoryDataset barDataset = new DefaultCategoryDataset();
-            barDataset.setValue(avgDijkstra, "Algorithme", "Dijkstra");
-            barDataset.setValue(avgAStar, "Algorithme", "A*");
-
-            JFreeChart barChart = ChartFactory.createBarChart(
+            JFreeChart avgTimeChart = ChartFactory.createBarChart(
                     "Temps moyen d'exécution",
                     "Algorithme",
                     "Temps (ms)",
-                    barDataset,
+                    avgTimeDataset,
                     PlotOrientation.VERTICAL,
-                    false, true, false);
+                    false, true, false
+            );
 
-            ChartPanel barChartPanel = new ChartPanel(barChart);
+            //? Line Chart - Nodes visited
+            JFreeChart nodesLineChart = ChartFactory.createLineChart(
+                    "Comparaison du nombre de noeuds marqués",
+                    "Test",
+                    "Noeuds marqués",
+                    nodesDataset,
+                    PlotOrientation.VERTICAL,
+                    true, true, false
+            );
 
-            // Créer le panel principal avec les deux graphiques
-            JPanel combinedPanel = new JPanel();
-            combinedPanel.setLayout(new java.awt.GridLayout(1, 2));
-            combinedPanel.add(lineChartPanel);
-            combinedPanel.add(barChartPanel);
+            //? Bar Chart - Average Nodes
+            DefaultCategoryDataset avgNodesDataset = new DefaultCategoryDataset();
+            avgNodesDataset.setValue(avgDijkstraNodes, "Algorithme", "Dijkstra");
+            avgNodesDataset.setValue(avgAStarNodes, "Algorithme", "A*");
 
-            // Fenêtre contenant les deux graphiques
-            JFrame frame = new JFrame("Analyse des performances");
+            JFreeChart avgNodesChart = ChartFactory.createBarChart(
+                    "Nombre moyen de noeuds marqués",
+                    "Algorithme",
+                    "Noeuds",
+                    avgNodesDataset,
+                    PlotOrientation.VERTICAL,
+                    false, true, false
+            );
+
+            //? Pannels
+            JPanel panel = new JPanel(new java.awt.GridLayout(2, 2));
+            panel.add(new ChartPanel(timeLineChart));
+            panel.add(new ChartPanel(avgTimeChart));
+            panel.add(new ChartPanel(nodesLineChart));
+            panel.add(new ChartPanel(avgNodesChart));
+            //? Frame
+            JFrame frame = new JFrame("Comparaison des algorithmes");
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            frame.setSize(1000, 600);
-            frame.setContentPane(combinedPanel);
+            frame.setSize(1200, 800);
+            frame.setContentPane(panel);
             frame.setVisible(true);
         });
     }
@@ -124,8 +154,6 @@ public class Launch {
 
         int successfulTests = 0;
         int failedTests = 0;
-        int invalidPathDijkstra = 0;
-        int invalidPathAStar = 0;
 
         System.out.println("---SCENARIOS ALEATOIRES---\n");
         System.out.println("Carte utilisée : " + mapToTest +"\n");
@@ -147,43 +175,47 @@ public class Launch {
         long totalTimeDijkstra = 0;
         long totalTimeAStar = 0;
 
+        DefaultCategoryDataset objDatasetNodesMarked = new DefaultCategoryDataset();
+        long totalDijkstraNodesMarked = 0;
+        long totalAStarNodesMarked = 0;
+
         for (int i = 0; i < nbTests; i++) {   
             // Pick a random origin and destination node each time
             int randomOrigin = RandomGenerator.getDefault().nextInt(1, graph.size());
             int randomDestination = RandomGenerator.getDefault().nextInt(1, graph.size());
-            
             // Create the shortest path data with the random origin and destination
             ShortestPathData data = new ShortestPathData(graph, graph.get(randomOrigin), graph.get(randomDestination), filter);
 
-            // Dijkstra
+            //? Dijkstra
             ShortestPathAlgorithm dijkstra = new DijkstraAlgorithm(data);
-            solutionDijkstra = dijkstra.run();
+            solutionDijkstra = dijkstra.run(); // run the algorithm
             pathDijkstra = solutionDijkstra.getPath();
-            //TODO Nb path not valid dijkstra et A*
             // Statistics solving time for Dijkstra algorithm
             long solvingTimeDijkstraMillis = solutionDijkstra.getSolvingTime().toMillis(); // convert Duration to milliseconds
             totalTimeDijkstra += solvingTimeDijkstraMillis;
             objDatasetSolvingTime.setValue(solvingTimeDijkstraMillis, "Dijkstra", "Test " + (i + 1));
-            System.out.println("Dijkstra" + solutionDijkstra.getNodeVisited());
-            // A*
+            objDatasetNodesMarked.setValue(solutionDijkstra.getNodeVisited(), "Dijkstra", "Test " + (i + 1));
+            totalDijkstraNodesMarked += solutionDijkstra.getNodeVisited();
+
+            //? A*
             ShortestPathAlgorithm astar = new AStarAlgorithm(data);
-            solutionAStar = astar.run();
+            solutionAStar = astar.run(); // run the algorithm
             pathAStar = solutionAStar.getPath();
             // Statistics solving time for A* algorithm
             long solvingTimeAStarMillis = solutionAStar.getSolvingTime().toMillis(); // convert Duration to milliseconds
             totalTimeAStar += solvingTimeAStarMillis;
             objDatasetSolvingTime.setValue(solvingTimeAStarMillis, "A*", "Test " + (i + 1));
-            System.out.println("A*" + solutionAStar.getNodeVisited());
-            // Test if the path is valid
+            objDatasetNodesMarked.setValue(solutionAStar.getNodeVisited(), "A*", "Test " + (i + 1));
+            totalAStarNodesMarked += solutionAStar.getNodeVisited();
+
+            //? Test if the path is valid
             if (!testPathValid(pathDijkstra) || !testPathValid(pathAStar)) {
                 System.out.println("Test échoué : Chemin invalide (impossible de dessiner)\n");
                 failedTests++;
-                invalidPathAStar += !testPathValid(pathAStar) ? 1 : 0;
-                invalidPathDijkstra += !testPathValid(pathDijkstra) ? 1 : 0;
                 continue; // Skip to the next iteration if the path is invalid
             }
 
-            // Compare Dijkstra and A*
+            //? Compare Dijkstra and A*
             boolean costDijkstraVsAStar = compareCosts(solutionDijkstra, solutionAStar);
             boolean arcsDijkstraVsAStar = compareArcs(pathDijkstra, pathAStar);
 
@@ -208,33 +240,53 @@ public class Launch {
 
         }
         
-        // Show the solving time chart
-        showCombinedCharts(objDatasetSolvingTime, totalTimeDijkstra/(double)nbTests, totalTimeAStar/(double)nbTests);
+        //? Show the charts with the statistics collected
+        showAllChartsTogether(
+            objDatasetSolvingTime, 
+            totalTimeDijkstra / (double)nbTests, 
+            totalTimeAStar / (double)nbTests,
+            objDatasetNodesMarked,
+            totalDijkstraNodesMarked / (double)nbTests,
+            totalAStarNodesMarked / (double)nbTests
+        );
 
+        //? Summary of the tests
         System.out.println("---FIN DES SCENARIOS ALEATOIRES---\n");
         System.out.println("Test réussi = les couts et arcs des chemins Dijkstra et A* sont égaux (l'heuristique de A* est vérifiée). \n");
         System.out.println("REUSSIS : " + successfulTests + "/" + nbTests + "\n");
         System.out.println("Test échoué = les couts et/ou arcs des chemins Dijkstra et A* sont différents ou chemin invalide. \n");
         System.out.println("ECHOUES : " + failedTests + "/" + nbTests + "\n");
-        System.out.println("Chemins invalides Dijkstra : " + invalidPathDijkstra + "\n");
-        System.out.println("Chemins invalides A* : " + invalidPathAStar + "\n");
         if (failedTests+ successfulTests != nbTests) System.out.println("Oupsi, le nombre de tests réussis et échoués ne correspond pas au nombre de tests effectués...\n");
     }
 
+    /**
+     * Check if the given path is valid.
+     * @param path The path to check.
+     * @return true if the path is valid, false otherwise.
+     **/
     public static boolean testPathValid(Path path) {
         // Check if the path is valid
         if (path == null || !path.isValid()) return false; 
         return true;
     }
 
-    // Check if the cost of the path1 is equal to the cost of the path built by Path1
-    // b-a >= 0
+    /**
+     * Compare the costs of two shortest path solutions.
+     * @param path1 The first shortest path solution.
+     * @param path2 The second shortest path solution.
+     * @return true if the cost of path1 is greater than or equal to the cost of path2, false otherwise.
+     */
     public static boolean compareCosts(ShortestPathSolution path1, ShortestPathSolution path2) {
         if (path1.getCost() - path2.getCost() >= 0) return true; 
         return false;
     }
 
-    // Check if the arcs of the path1 are equal to the arcs of the path2
+    /**
+     * Compare the arcs of two paths.
+     * @param path1 The first path.
+     * @param path2 The second path.
+     * @return true if the arcs of path1 are equal to the arcs of path2, false otherwise.
+     * */
     public static boolean compareArcs(Path path1, Path path2) {
         if(path1 != null && path2 != null) {
             return path1.getArcs().equals(path2.getArcs());

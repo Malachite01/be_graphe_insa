@@ -157,6 +157,7 @@ public class WeaklyConnectedComponentsAlgorithm
 
     @Override
     protected int getNodeVisited() {
+        //pas sur de ca, mais on ne s'en sert pas dans nos tests donc pas besoin de le faire
         // This algorithm does not count the number of visited nodes.
         return 0;
     }
