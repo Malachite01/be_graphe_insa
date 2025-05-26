@@ -42,9 +42,10 @@ public class Launch {
      * @param nodesDataset Dataset for the nodes visited line chart.
      * @param avgDijkstraNodes Average number of nodes visited for Dijkstra algorithm.
      * @param avgAStarNodes Average number of nodes visited for A* algorithm.
+     * @param mode The mode of the test (NOFILTER_LENGTH, CARS_LENGTH, CARS_TIME, PEDESTRIAN_TIME)
      */
-    public static void showAllChartsTogether(DefaultCategoryDataset solvingTimeDataset, double avgDijkstraTime, double avgAStarTime, 
-    DefaultCategoryDataset nodesDataset, double avgDijkstraNodes, double avgAStarNodes) {
+    public static void showAllCharts(DefaultCategoryDataset solvingTimeDataset, double avgDijkstraTime, double avgAStarTime, 
+    DefaultCategoryDataset nodesDataset, double avgDijkstraNodes, double avgAStarNodes, String mode) {
         SwingUtilities.invokeLater(() -> {
             //? Line Chart - Solving Time
             JFreeChart timeLineChart = ChartFactory.createLineChart(
@@ -101,7 +102,7 @@ public class Launch {
             panel.add(new ChartPanel(nodesLineChart));
             panel.add(new ChartPanel(avgNodesChart));
             //? Frame
-            JFrame frame = new JFrame("Comparaison des algorithmes");
+            JFrame frame = new JFrame(mode);
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setSize(1200, 800);
             frame.setContentPane(panel);
@@ -241,13 +242,14 @@ public class Launch {
         }
         
         //? Show the charts with the statistics collected
-        showAllChartsTogether(
+        showAllCharts(
             objDatasetSolvingTime, 
-            totalTimeDijkstra / (double)nbTests, 
-            totalTimeAStar / (double)nbTests,
+            totalTimeDijkstra / (double)successfulTests, 
+            totalTimeAStar / (double)successfulTests,
             objDatasetNodesMarked,
-            totalDijkstraNodesMarked / (double)nbTests,
-            totalAStarNodesMarked / (double)nbTests
+            totalDijkstraNodesMarked / (double)successfulTests,
+            totalAStarNodesMarked / (double)successfulTests,
+            filter.toString()
         );
 
         //? Summary of the tests
@@ -297,7 +299,10 @@ public class Launch {
     public static void main(String[] args) throws Exception {
         final String mapToTest = "C:\\Users\\mathi\\OneDrive\\Cours\\INSA\\S6\\I3MIIL11 - Graphes\\be-graphes\\be-graphes-maps\\haute-garonne.mapgr";
         // faire plusieurs tests de chemins aléatoires en fonction du mode choisi (0: NOFILTER_LENGTH, 1: CARS_LENGTH, 2: CARS_TIME, 3: PEDESTRIAN_TIME)
-        testRandomScenarios(0, 50, mapToTest);
+        // Cars length
+        testRandomScenarios(1, 50, mapToTest);
+        // Cars time
+        testRandomScenarios(2, 50, mapToTest);
 
         testManualScenarios();
     }
