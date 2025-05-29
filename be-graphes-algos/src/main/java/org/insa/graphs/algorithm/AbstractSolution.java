@@ -83,7 +83,7 @@ public abstract class AbstractSolution {
      * @return Number of nodes visited during the algorithm execution.
      */
     public int getNodeVisited() {
-        return nodeVisited;
+        return this.nodeVisited;
     }
 
     /**
