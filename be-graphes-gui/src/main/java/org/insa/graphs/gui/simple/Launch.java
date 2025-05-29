@@ -40,14 +40,6 @@ public class Launch {
             this.maxDistance = maxDistance;
         }
 
-        public double getMinDistance() {
-            return minDistance;
-        }
-
-        public double getMaxDistance() {
-            return maxDistance;
-        }
-
         public static String getDistanceModeName(DistanceMode mode) {
             switch (mode) {
                 case SMALL:
@@ -62,7 +54,7 @@ public class Launch {
         }
 
         public boolean isInRange(double distance) {
-            return distance >= minDistance && distance <= maxDistance;
+            return distance >= this.minDistance && distance <= this.maxDistance;
         }
 
         @Override
