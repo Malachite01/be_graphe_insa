@@ -28,8 +28,8 @@ public class Launch {
      * Enum to represent the distance mode for the tests.
     */
     public enum DistanceMode {
-        SMALL(0, 1000), //Bellman-Ford vs Dijkstra
-        MEDIUM(1000, 100000), //Dijkstra vs A*
+        SMALL(0, 5000), //Bellman-Ford vs Dijkstra
+        MEDIUM(5000, 100000), //Dijkstra vs A*
         LARGE(100000, Double.MAX_VALUE); //Dijkstra vs A*
 
         private final double minDistance;
@@ -93,6 +93,7 @@ public class Launch {
 
         int successfulTests = 0;
         int failedTests = 0;
+        int invalidPaths = 0;
 
         System.out.println("---SCENARIOS ALEATOIRES---\n");
         System.out.println("Carte utilisée : " + mapToTest +"\n");
@@ -170,7 +171,7 @@ public class Launch {
             //? Test if the path is valid
             if (!testPathValid(pathDijkstra) || !testPathValid(pathAlgorithm)) {
                 System.out.println("Test échoué : Chemin invalide (impossible de dessiner)\n");
-                failedTests++;
+                invalidPaths++;
                 continue; // Skip to the next iteration if the path is invalid
             }
 
@@ -186,9 +187,10 @@ public class Launch {
                 successfulTests++;
                 System.out.println("Test " + (i + 1) + " réussi\n");
             } else {
-                // Invalid test, draw the paths in red, light red, lighter red
-                drawing.drawPath(pathAlgorithm, new Color(255, 0, 0));
-                drawing.drawPath(pathDijkstra, new Color(255, 77, 77));
+                // Invalid test, draw the paths in red, orange
+                drawing.drawPath(pathDijkstra, Color.RED);
+                drawing.drawPath(pathAlgorithm, Color.ORANGE);
+                // Increment failed tests and print the reason
                 failedTests++;
                 System.out.println("Test " + (i + 1) + " échoué : Comparaison échouée");
                 if (!costDijkstraVsAlgorithm)
@@ -219,7 +221,8 @@ public class Launch {
         System.out.println("REUSSIS : " + successfulTests + "/" + nbTests + "\n");
         System.out.println("Test échoué = les couts et/ou arcs des chemins Dijkstra et"+ algoToCompareTo +" sont différents ou chemin invalide. \n");
         System.out.println("ECHOUES : " + failedTests + "/" + nbTests + "\n");
-        if (failedTests+ successfulTests != nbTests) System.out.println("Oupsi, le nombre de tests réussis et échoués ne correspond pas au nombre de tests effectués...\n");
+        System.out.println("INVALIDES : " + invalidPaths + "/" + nbTests + "\n");
+        if (failedTests + invalidPaths + successfulTests != nbTests) System.out.println("Oupsi, le nombre de tests réussis et échoués ne correspond pas au nombre de tests effectués...\n");
     }
 
     /**
@@ -259,16 +262,17 @@ public class Launch {
 
     public static void main(String[] args) throws Exception {
         final String mapToTest = "C:\\Users\\mathi\\OneDrive\\Cours\\INSA\\S6\\I3MIIL11 - Graphes\\be-graphes\\be-graphes-maps\\haute-garonne.mapgr";
+        final String mapToTestForBellman = "C:\\Users\\mathi\\OneDrive\\Cours\\INSA\\S6\\I3MIIL11 - Graphes\\be-graphes\\be-graphes-maps\\insa.mapgr";
         // faire plusieurs tests de chemins aléatoires en fonction du mode choisi (0: NOFILTER_LENGTH, 1: CARS_LENGTH, 2: CARS_TIME, 3: PEDESTRIAN_TIME)
         
         // SMALL = bellman ford vs Dijkstra 0 to 5000m
         // MEDIUM = Dijkstra vs A* 5000 to 100000m
         // LARGE = Dijkstra vs A* 100000m to infinity
-        DistanceMode distanceMode = DistanceMode.MEDIUM;
+        DistanceMode distanceMode = DistanceMode.SMALL;
         // Cars length
-        testRandomScenarios(1, 50, mapToTest, true, distanceMode);
+        testRandomScenarios(1, 50, (distanceMode==DistanceMode.SMALL?mapToTestForBellman:mapToTest), true, distanceMode);
         // Cars time
-        testRandomScenarios(2, 50, mapToTest, true, distanceMode);
+        testRandomScenarios(2, 50, (distanceMode==DistanceMode.SMALL?mapToTestForBellman:mapToTest), true, distanceMode);
 
         testManualScenario();
     }

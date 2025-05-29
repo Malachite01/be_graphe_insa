@@ -35,7 +35,7 @@ class DrawUtilsLaunch {
             //? Line Chart - Solving Time
             JFreeChart timeLineChart = ChartFactory.createLineChart(
                     "Comparaison des temps de résolution",
-                    "Test",
+                    "",
                     "Temps (ms)",
                     solvingTimeDataset,
                     PlotOrientation.VERTICAL,
@@ -44,22 +44,22 @@ class DrawUtilsLaunch {
 
             //? Bar Chart - Average Time
             DefaultCategoryDataset avgTimeDataset = new DefaultCategoryDataset();
-            avgTimeDataset.setValue(avgDijkstraTime, "Algorithme", "Dijkstra");
-            avgTimeDataset.setValue(avgAStarTime, "Algorithme", (distanceMode==DistanceMode.SMALL?"Bellman":"A*"));
+            avgTimeDataset.setValue(avgDijkstraTime, "Dijkstra", "Algorithme");
+            avgTimeDataset.setValue(avgAStarTime, (distanceMode==DistanceMode.SMALL?"Bellman-Ford":"A*"), "Algorithme");
 
             JFreeChart avgTimeChart = ChartFactory.createBarChart(
                     "Temps moyen d'exécution",
-                    "Algorithme",
+                    "",
                     "Temps (ms)",
                     avgTimeDataset,
                     PlotOrientation.VERTICAL,
-                    false, true, false
+                    true, true, false
             );
 
             //? Line Chart - Nodes visited
             JFreeChart nodesLineChart = ChartFactory.createLineChart(
                     "Comparaison du nombre de noeuds marqués",
-                    "Test",
+                    "",
                     "Noeuds marqués",
                     nodesDataset,
                     PlotOrientation.VERTICAL,
@@ -68,16 +68,16 @@ class DrawUtilsLaunch {
 
             //? Bar Chart - Average Nodes
             DefaultCategoryDataset avgNodesDataset = new DefaultCategoryDataset();
-            avgNodesDataset.setValue(avgDijkstraNodes, "Algorithme", "Dijkstra");
-            avgNodesDataset.setValue(avgAStarNodes, "Algorithme", (distanceMode==DistanceMode.SMALL?"Bellman":"A*"));
+            avgNodesDataset.setValue(avgDijkstraNodes, "Dijkstra", "Algorithme");
+            avgNodesDataset.setValue(avgAStarNodes, (distanceMode==DistanceMode.SMALL?"Bellman-Ford":"A*"), "Algorithme");
 
             JFreeChart avgNodesChart = ChartFactory.createBarChart(
                     "Nombre moyen de noeuds marqués",
-                    "Algorithme",
+                    "",
                     "Noeuds",
                     avgNodesDataset,
                     PlotOrientation.VERTICAL,
-                    false, true, false
+                    true, true, false
             );
 
             //? Pannels

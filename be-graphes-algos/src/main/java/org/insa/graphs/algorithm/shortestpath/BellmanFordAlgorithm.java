@@ -90,8 +90,8 @@ public class BellmanFordAlgorithm extends ShortestPathAlgorithm {
             double totalCost = 0;
             while (arc != null) {
                 arcs.add(arc);
-                arc = predecessorArcs[arc.getOrigin().getId()];
                 totalCost += arc.getLength();
+                arc = predecessorArcs[arc.getOrigin().getId()];
             }
 
             // Reverse the path...
