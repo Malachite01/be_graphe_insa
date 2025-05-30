@@ -87,6 +87,7 @@ public class Launch {
         int failedTests = 0;
         int invalidPaths = 0;
 
+        // Print the test information
         System.out.println("---SCENARIOS ALEATOIRES---\n");
         System.out.println("Carte utilisée : " + mapToTest +"\n");
         ArcInspector filter = ArcInspectorFactory.getAllFilters().get(filterMode);
@@ -112,6 +113,7 @@ public class Launch {
         long totalDijkstraNodesMarked = 0;
         long totalAlgorithmNodesMarked = 0;
 
+        //? Begin the tests
         for (int i = 0; i < nbTests; i++) {   
             // Pick a random origin and destination node each time
             int randomOrigin = RandomGenerator.getDefault().nextInt(1, graph.size());
@@ -162,7 +164,8 @@ public class Launch {
 
             //? Test if the path is valid
             if (!testPathValid(pathDijkstra) || !testPathValid(pathAlgorithm)) {
-                System.out.println("Test échoué : Chemin invalide (impossible de dessiner)\n");
+                //!Debug
+                // System.out.println("Test échoué : Chemin invalide (impossible de dessiner)\n");
                 invalidPaths++;
                 continue; // Skip to the next iteration if the path is invalid
             }
@@ -177,18 +180,18 @@ public class Launch {
                 // Valid test, draw the path (all paths are the same so doesn't matter which one we draw)
                 drawing.drawPath(pathAlgorithm, Color.GREEN);
                 successfulTests++;
-                System.out.println("Test " + (i + 1) + " réussi\n");
             } else {
                 // Invalid test, draw the paths in red, orange
                 drawing.drawPath(pathDijkstra, Color.RED);
                 drawing.drawPath(pathAlgorithm, Color.ORANGE);
                 // Increment failed tests and print the reason
                 failedTests++;
-                System.out.println("Test " + (i + 1) + " échoué : Comparaison échouée");
-                if (!costDijkstraVsAlgorithm)
-                    System.out.println("  - Coûts différents entre Dijkstra et "+algoToCompareTo+"\n");
-                if (!arcsDijkstraVsAlgorithm)
-                    System.out.println("  - Chemins différents entre Dijkstra et "+algoToCompareTo+"\n");
+                //!Debug
+                // System.out.println("Test " + (i + 1) + " échoué : Comparaison échouée");
+                // if (!costDijkstraVsAlgorithm)
+                //     System.out.println("  - Coûts différents entre Dijkstra et "+algoToCompareTo+"\n");
+                // if (!arcsDijkstraVsAlgorithm)
+                //     System.out.println("  - Chemins différents entre Dijkstra et "+algoToCompareTo+"\n");
             }
 
         }
@@ -208,11 +211,9 @@ public class Launch {
         }
 
         //? Summary of the tests
-        System.out.println("---FIN DES SCENARIOS ALEATOIRES---\n");
-        System.out.println("Test réussi = les couts et arcs des chemins Dijkstra et"+ algoToCompareTo +" sont égaux. \n");
-        System.out.println("REUSSIS : " + successfulTests + "/" + nbTests + "\n");
-        System.out.println("Test échoué = les couts et/ou arcs des chemins Dijkstra et"+ algoToCompareTo +" sont différents ou chemin invalide. \n");
-        System.out.println("ECHOUES : " + failedTests + "/" + nbTests + "\n");
+        System.out.println("---FIN DES SCENARIOS ALEATOIRES ("+filter.toString()+")---\n");
+        System.out.println("REUSSIS : " + successfulTests + "/" + (nbTests - invalidPaths) + " (les couts et arcs des chemins Dijkstra et "+ algoToCompareTo +" sont égaux) \n");
+        System.out.println("ECHOUES : " + failedTests + "/" + (nbTests - invalidPaths) + " (les couts et/ou arcs des chemins Dijkstra et "+ algoToCompareTo +" sont différents) \n");
         System.out.println("INVALIDES : " + invalidPaths + "/" + nbTests + "\n");
         if (failedTests + invalidPaths + successfulTests != nbTests) System.out.println("Oupsi, le nombre de tests réussis et échoués ne correspond pas au nombre de tests effectués...\n");
     }
@@ -223,9 +224,7 @@ public class Launch {
      * @return true if the path is valid, false otherwise.
      **/
     public static boolean testPathValid(Path path) {
-        // Check if the path is valid
-        if (path == null || !path.isValid()) return false; 
-        return true;
+        return path != null && path.isValid();
     }
 
     /**
@@ -235,8 +234,7 @@ public class Launch {
      * @return true if the cost of path1 is greater than or equal to the cost of path2, false otherwise.
      */
     public static boolean compareCosts(ShortestPathSolution path1, ShortestPathSolution path2) {
-        if (path1.getCost() - path2.getCost() >= 0) return true; 
-        return false;
+        return path1.getCost() - path2.getCost() >= 0;
     }
 
     /**
@@ -246,21 +244,20 @@ public class Launch {
      * @return true if the arcs of path1 are equal to the arcs of path2, false otherwise.
      * */
     public static boolean compareArcs(Path path1, Path path2) {
-        if(path1 != null && path2 != null) {
-            return path1.getArcs().equals(path2.getArcs());
-        }
-        return false;
+        if(path1 == null && path2 == null) return false;
+        return path1.getArcs().equals(path2.getArcs());
     }
 
     public static void main(String[] args) throws Exception {
         final String mapToTest = "C:\\Users\\mathi\\OneDrive\\Cours\\INSA\\S6\\I3MIIL11 - Graphes\\be-graphes\\be-graphes-maps\\haute-garonne.mapgr";
         final String mapToTestForBellman = "C:\\Users\\mathi\\OneDrive\\Cours\\INSA\\S6\\I3MIIL11 - Graphes\\be-graphes\\be-graphes-maps\\insa.mapgr";
-        // faire plusieurs tests de chemins aléatoires en fonction du mode choisi (0: NOFILTER_LENGTH, 1: CARS_LENGTH, 2: CARS_TIME, 3: PEDESTRIAN_TIME)
         
         // SMALL = bellman ford vs Dijkstra 0 to 5000m
         // MEDIUM = Dijkstra vs A* 5000 to 100000m
         // LARGE = Dijkstra vs A* 100000m to infinity
         DistanceMode distanceMode = DistanceMode.SMALL;
+        
+        // faire plusieurs tests de chemins aléatoires en fonction du mode choisi (0: NOFILTER_LENGTH, 1: CARS_LENGTH, 2: CARS_TIME, 3: PEDESTRIAN_TIME)
         // Cars length
         testRandomScenarios(1, 50, (distanceMode==DistanceMode.SMALL?mapToTestForBellman:mapToTest), true, distanceMode);
         // Cars time
