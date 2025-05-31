@@ -21,15 +21,18 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
         final int nbNodes = graph.size();
         LabelStar[] labels = new LabelStar[nbNodes];
         Mode mode= data.getMode();
-        int maxSpeed = graph.getGraphInformation().getMaximumSpeed(); // Retrieve maximum speed from graph information
+        float maxSpeed = (graph.getGraphInformation().getMaximumSpeed())/3.6f; // Retrieve maximum speed from graph information in m/s
 
         // Initialize labels for each node in the graph
         // Set the cost to infinity, fathers to null, and marked to false the label of the origin node is set to 0
         for (int i = 0; i < nbNodes; i++) {
+            float Distanceheuristic = (float) Point.distance(graph.get(i).getPoint(), destinationNode.getPoint());// IN METERS! 
             if(mode==Mode.LENGTH){
-            labels[i] = new LabelStar(graph.get(i), false, Float.POSITIVE_INFINITY,(float) Point.distance(graph.get(i).getPoint(), destinationNode.getPoint()));
+            // length mode: the heuristic is : the straightforward distance between the current node and the destination node units: meters
+            labels[i] = new LabelStar(graph.get(i), false, Float.POSITIVE_INFINITY,Distanceheuristic);
             }else if (mode==Mode.TIME){
-                labels[i] = new LabelStar(graph.get(i), false, Float.POSITIVE_INFINITY, (float)(Point.distance(graph.get(i).getPoint(), destinationNode.getPoint()) / maxSpeed));
+            //time mode: the heuristic is: the straightforward distance between the current node and the destination node, divided by the max possible speed on the graph units:seconds
+                labels[i] = new LabelStar(graph.get(i), false, Float.POSITIVE_INFINITY, Distanceheuristic /maxSpeed);
 
             }
         }

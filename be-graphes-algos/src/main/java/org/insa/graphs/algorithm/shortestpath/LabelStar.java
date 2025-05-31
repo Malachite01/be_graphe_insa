@@ -11,17 +11,7 @@ public class LabelStar extends Label implements Comparable<Label>{
         super(current, marked, currentCost);
         this.destinationCost=destinationCost;
         }
-
-   /* public float getheuristicGoalCost(ArcInspector inspector){
-        if(inspector.getMode()==Mode.TIME){
-            return (float) (Point.distance(this.getCurrentNode().getPoint(), destinationNode.getPoint()) / 3.6);
-
-        }else if(inspector.getMode()==Mode.LENGTH){
-            return (float) Point.distance(this.getCurrentNode().getPoint(), destinationNode.getPoint());
-        }
-        return  0;
-    }
-    */
+        
     public float getTotalCost(){
         return this.getCost() + this.destinationCost; // Pass appropriate ArcInspector if needed
                                 //destinationCost = heuristic
