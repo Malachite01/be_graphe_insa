@@ -63,10 +63,6 @@ public class Launch {
         }
     }
 
-    public static void testManualScenario() throws Exception {
-        //TODO: faire des scénarios manuels et un petit avec bellman ford
-    }
-
     /**
      * Test a random scenario with the given filter mode and number of tests.
      * @param filterMode The mode of the filter to use (0: NOFILTER_LENGTH, 1: CARS_LENGTH, 2: CARS_TIME, 3: PEDESTRIAN_TIME).
@@ -171,12 +167,8 @@ public class Launch {
             }
 
             //? Compare Dijkstra and Bellman-Ford or A*
-            boolean costDijkstraVsAlgorithm = compareCosts(solutionDijkstra, solutionAlgorithm);
-            boolean arcsDijkstraVsAlgorithm = compareArcs(pathDijkstra, pathAlgorithm);
-
-            // If all comparisons are successful, the test is successful
-            // i.e Same costs and same arcs
-            if (costDijkstraVsAlgorithm && arcsDijkstraVsAlgorithm) {
+            boolean arcsDijkstraVsAlgorithm = solutionAlgorithm.getPath().getArcs().equals(solutionDijkstra.getPath().getArcs());
+            if (arcsDijkstraVsAlgorithm) {
                 // Valid test, draw the path (all paths are the same so doesn't matter which one we draw)
                 drawing.drawPath(pathAlgorithm, Color.GREEN);
                 successfulTests++;
@@ -227,27 +219,6 @@ public class Launch {
         return path != null && path.isValid();
     }
 
-    /**
-     * Compare the costs of two shortest path solutions.
-     * @param path1 The first shortest path solution.
-     * @param path2 The second shortest path solution.
-     * @return true if the cost of path1 is greater than or equal to the cost of path2, false otherwise.
-     */
-    public static boolean compareCosts(ShortestPathSolution path1, ShortestPathSolution path2) {
-        return path1.getCost() - path2.getCost() >= 0;
-    }
-
-    /**
-     * Compare the arcs of two paths.
-     * @param path1 The first path.
-     * @param path2 The second path.
-     * @return true if the arcs of path1 are equal to the arcs of path2, false otherwise.
-     * */
-    public static boolean compareArcs(Path path1, Path path2) {
-        if(path1 == null && path2 == null) return false;
-        return path1.getArcs().equals(path2.getArcs());
-    }
-
     public static void main(String[] args) throws Exception {
         final String mapToTest = "C:\\Users\\mathi\\OneDrive\\Cours\\INSA\\S6\\I3MIIL11 - Graphes\\be-graphes\\be-graphes-maps\\haute-garonne.mapgr";
         final String mapToTestForBellman = "C:\\Users\\mathi\\OneDrive\\Cours\\INSA\\S6\\I3MIIL11 - Graphes\\be-graphes\\be-graphes-maps\\insa.mapgr";
@@ -262,7 +233,5 @@ public class Launch {
         testRandomScenarios(1, 50, (distanceMode==DistanceMode.SMALL?mapToTestForBellman:mapToTest), true, distanceMode);
         // Cars time
         testRandomScenarios(2, 50, (distanceMode==DistanceMode.SMALL?mapToTestForBellman:mapToTest), true, distanceMode);
-
-        testManualScenario();
     }
 }

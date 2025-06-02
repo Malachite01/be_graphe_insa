@@ -243,20 +243,21 @@ public class Path {
      * @return true if the path is valid, false otherwise.
      */
     public boolean isValid() {
-        if (this.isEmpty()) { // if the path is empty
-            return true;
-        } else if(this.arcs.isEmpty() && this.origin != null) { // A single node without arcs
-            return true;
-        } else if (arcs.get(0).getOrigin() == this.getOrigin()){ // if the first arc has for origin the origin of the path
-            for(int i = 0; i < arcs.size()-1; i++) {
-                // if the destination of the first one is not the origin of the second one, path is not valid
-                if(arcs.get(i).getDestination() != arcs.get(i+1).getOrigin()){ 
-                    return false;
-                }
+        // chemin vide
+        if (this.isEmpty()) return true;
+
+        // un seul noeud, aucun arc
+        if (this.arcs.isEmpty()) return this.origin != null;
+        // le chemin a des arcs vérifier que le premier arc part bien de l'origine
+        if (!arcs.get(0).getOrigin().equals(this.origin)) return false;
+
+        // Vérifier que chaque arc se suit correctement
+        for (int i = 0; i < arcs.size() - 1; i++) {
+            if (!arcs.get(i).getDestination().equals(arcs.get(i + 1).getOrigin())) {
+                return false;
             }
-            return true;
         }
-        return false;
+        return true;
     }
 
     /**
